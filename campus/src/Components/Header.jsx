@@ -13,7 +13,7 @@ class Header extends Component {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
             <Nav className="ml-auto">
-              <Nav.Link href="#">Вход</Nav.Link>
+              <Link to="/login">Вход</Link>
               <Link to="/register">Регистрация</Link>
             </Nav>
           </Navbar.Collapse>

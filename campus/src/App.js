@@ -4,6 +4,7 @@ import Header from './Components/Header'
 import WelcomeMessage from './Components/WelcomeMessage'
 import RegistrationPage from "./Components/RegistrationPage";
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import LoginPage from './Components/LoginPage'
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
       <Routes>
           <Route exact path="/" element = {<WelcomeMessage/>} />
           <Route exact path="/register" element={<RegistrationPage/>} />
+          <Route exact path="/login" element={<LoginPage/>} />
       </Routes>
       </Router>
     </div>
