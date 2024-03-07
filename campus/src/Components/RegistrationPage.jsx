@@ -3,8 +3,35 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import {Row, Col } from 'react-bootstrap';
+import { registerUser } from './Actions/PostRegister';
+import { connect } from 'react-redux';
 
 class RegistrationPage extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      email: '',
+      password: ''
+    };
+  }
+
+  handleChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  };
+
+  handleSubmit = async (e) => {
+    e.preventDefault();
+    const { username, email, password } = this.state;
+    // Вызываем ваш Action для регистрации пользователя
+    await this.props.registerUser({ username, email, password });
+    // Дополнительные действия после успешной регистрации
+    // Например, редирект на другую страницу или отображение сообщения об успешной регистрации
+  };
+
   render() {
     return (
       <Container className="mt-4">
@@ -64,4 +91,8 @@ class RegistrationPage extends Component {
   }
 }
 
-export default RegistrationPage;
+const mapDispatchToProps = (dispatch) => ({
+  registerUser: (userData) => dispatch(registerUser(userData))
+});
+
+export default connect(null, mapDispatchToProps)(RegistrationPage);

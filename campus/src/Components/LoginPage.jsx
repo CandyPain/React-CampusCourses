@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import {Row, Col } from 'react-bootstrap';
 
-class RegistrationPage extends Component {
+class LoginPage extends Component {
   render() {
     return (
       <Container className="mt-4">
@@ -37,4 +37,4 @@ class RegistrationPage extends Component {
   }
 }
 
-export default RegistrationPage;
+export default LoginPage;
