@@ -36,7 +36,7 @@ class RegistrationPage extends Component {
     return (
       <Container className="mt-4">
         <h2 className="mb-4">Регистрация</h2>
-        <Form>
+        <Form onSubmit={this.handleSubmit}>
           <Row className="mb-3">
             <Col>
               <Form.Group controlId="formFullName">
