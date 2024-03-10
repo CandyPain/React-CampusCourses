@@ -11,9 +11,11 @@ class RegistrationPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
+      fullName: '',
+      birthDate: '',
       email: '',
-      password: ''
+      password: '',
+      confirmPassword: ''
     };
   }
 
@@ -25,11 +27,9 @@ class RegistrationPage extends Component {
 
   handleSubmit = async (e) => {
     e.preventDefault();
-    const { username, email, password } = this.state;
-    // Вызываем ваш Action для регистрации пользователя
-    await this.props.registerUser({ username, email, password });
-    // Дополнительные действия после успешной регистрации
-    // Например, редирект на другую страницу или отображение сообщения об успешной регистрации
+    console.log("handleSubmit");
+    const { fullName, birthDate, email, password, confirmPassword } = this.state;
+    await this.props.registerUser({ fullName, birthDate, email, password, confirmPassword });
   };
 
   render() {
@@ -82,7 +82,7 @@ class RegistrationPage extends Component {
             </Col>
           </Row>
 
-          <Button variant="primary" type="submit">
+          <Button variant="primary" type="submit" onClick={() => console.log('Button clicked')}>
             Зарегистрироваться
           </Button>
         </Form>
@@ -96,3 +96,4 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(null, mapDispatchToProps)(RegistrationPage);
+
