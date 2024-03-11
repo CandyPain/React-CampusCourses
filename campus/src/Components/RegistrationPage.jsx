@@ -20,6 +20,9 @@ class RegistrationPage extends Component {
   }
 
   handleChange = (e) => {
+    console.log("change");
+    console.log(e.target.name)
+    console.log(e.target.value)
     this.setState({
       [e.target.name]: e.target.value
     });
@@ -29,6 +32,33 @@ class RegistrationPage extends Component {
     e.preventDefault();
     console.log("handleSubmit");
     const { fullName, birthDate, email, password, confirmPassword } = this.state;
+  const currentYear = new Date().getFullYear();
+  const birthYear = new Date(birthDate).getFullYear();
+  if (birthYear >= currentYear) {
+    alert('Пожалуйста, введите корректную дату рождения');
+    return;
+  }
+
+  // Проверка email
+  const emailRegex = /\S+@\S+\.\S+/;
+  console.log("email" + email);
+  if (!emailRegex.test(email)) {
+    alert('Пожалуйста, введите корректный email');
+    return;
+  }
+
+  // Проверка пароля
+  if (password.length < 6 || !/\d/.test(password)) {
+    console.log("pass");
+    alert('Пароль должен содержать не менее 6 символов и хотя бы одну цифру');
+    return;
+  }
+
+  // Проверка совпадения паролей
+  if (password !== confirmPassword) {
+    alert('Пароли не совпадают');
+    return;
+  }
     await this.props.registerUser({ fullName, birthDate, email, password, confirmPassword });
   };
 
@@ -41,7 +71,7 @@ class RegistrationPage extends Component {
             <Col>
               <Form.Group controlId="formFullName">
                 <Form.Label>ФИО</Form.Label>
-                <Form.Control type="text" placeholder="Введите ФИО" />
+                <Form.Control type="text" name = "fullName" placeholder="Введите ФИО" onChange={this.handleChange}/>
               </Form.Group>
             </Col>
           </Row>
@@ -50,7 +80,7 @@ class RegistrationPage extends Component {
             <Col>
               <Form.Group controlId="formBirthday">
                 <Form.Label>Дата рождения</Form.Label>
-                <Form.Control type="date" />
+                <Form.Control type="date" onChange={this.handleChange} name = "birthDate"/>
               </Form.Group>
             </Col>
           </Row>
@@ -59,7 +89,7 @@ class RegistrationPage extends Component {
             <Col>
               <Form.Group controlId="formEmail">
                 <Form.Label>Email адрес</Form.Label>
-                <Form.Control type="email" placeholder="Введите email" />
+                <Form.Control type="email" placeholder="Введите email" name = "email" onChange={this.handleChange} />
               </Form.Group>
             </Col>
           </Row>
@@ -68,7 +98,7 @@ class RegistrationPage extends Component {
             <Col>
               <Form.Group controlId="formPassword">
                 <Form.Label>Пароль</Form.Label>
-                <Form.Control type="password" placeholder="Введите пароль" />
+                <Form.Control type="password" placeholder="Введите пароль" name = "password" onChange={this.handleChange}/>
               </Form.Group>
             </Col>
           </Row>
@@ -77,7 +107,7 @@ class RegistrationPage extends Component {
             <Col>
               <Form.Group controlId="formPasswordConfirm">
                 <Form.Label>Повторите пароль</Form.Label>
-                <Form.Control type="password" placeholder="Повторите пароль" />
+                <Form.Control type="password" placeholder="Повторите пароль" name = "confirmPassword" onChange={this.handleChange}/>
               </Form.Group>
             </Col>
           </Row>

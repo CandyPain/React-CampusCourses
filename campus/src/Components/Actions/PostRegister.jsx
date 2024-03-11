@@ -8,7 +8,8 @@ export const registerUser = (userData) => {
       console.log(response.data.token);
       dispatch(registerSuccess(response.data.token));
     } catch (error) {
-      console.error('Registration failed:', error);
+      console.log(error);
+      alert('Registration failed:', error.message);
     }
   };
 };
