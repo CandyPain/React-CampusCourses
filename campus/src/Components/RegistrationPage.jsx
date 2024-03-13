@@ -38,23 +38,17 @@ class RegistrationPage extends Component {
     alert('Пожалуйста, введите корректную дату рождения');
     return;
   }
-
-  // Проверка email
   const emailRegex = /\S+@\S+\.\S+/;
   console.log("email" + email);
   if (!emailRegex.test(email)) {
     alert('Пожалуйста, введите корректный email');
     return;
   }
-
-  // Проверка пароля
   if (password.length < 6 || !/\d/.test(password)) {
     console.log("pass");
     alert('Пароль должен содержать не менее 6 символов и хотя бы одну цифру');
     return;
   }
-
-  // Проверка совпадения паролей
   if (password !== confirmPassword) {
     alert('Пароли не совпадают');
     return;

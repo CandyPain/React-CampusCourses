@@ -1,14 +1,28 @@
 const initialState = {
-    token: null
-  };
+  token: null,
+  isAuthenticated: false,
+};
   
   const reducer = (state = initialState, action) => {
     switch (action.type) {
-      case 'REGISTER_SUCCESS':
+        case 'LOGIN_SUCCESS':
         return {
           ...state,
-          token: action.payload
+          token: action.payload,
+          isAuthenticated: true,
         };
+        case 'REGISTER_SUCCESS':
+          return {
+            ...state,
+            token: action.payload,
+            isAuthenticated: true,
+          };
+        case 'LOGOUT':
+          return {
+            ...state,
+            token: null,
+            isAuthenticated: false,
+          };
       default:
         return state;
     }
