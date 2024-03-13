@@ -1,6 +1,7 @@
 const initialState = {
   token: null,
   isAuthenticated: false,
+  userEmail: '',
 };
   
   const reducer = (state = initialState, action) => {
@@ -10,18 +11,21 @@ const initialState = {
           ...state,
           token: action.payload,
           isAuthenticated: true,
+          userEmail: action.payload,
         };
         case 'REGISTER_SUCCESS':
           return {
             ...state,
             token: action.payload,
             isAuthenticated: true,
+            userEmail: action.payload,
           };
         case 'LOGOUT':
           return {
             ...state,
             token: null,
             isAuthenticated: false,
+            userEmail: '',
           };
       default:
         return state;

@@ -37,15 +37,15 @@ class LoginPage extends Component {
     return;
   }
     await this.props.loginUser({ email, password});
+  };
+
+  render() {
     const { isAuthenticated } = this.props;
     console.log(isAuthenticated);
     if (isAuthenticated) {
       console.log('navigate');
-      <Navigate to="/Main" />;
+      return <Navigate to="/Main" />;
     }
-  };
-
-  render() {
     return (
       <Container className="mt-4">
         <h2 className="mb-4">Вход</h2>
@@ -82,7 +82,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.RegisterReducer.isAuthenticated
+  isAuthenticated: state.isAuthenticated
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

@@ -5,6 +5,7 @@ import Container from 'react-bootstrap/Container';
 import {Row, Col } from 'react-bootstrap';
 import { registerUser } from './Actions/PostRegister';
 import { connect } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 
 class RegistrationPage extends Component {
 
@@ -57,6 +58,12 @@ class RegistrationPage extends Component {
   };
 
   render() {
+    const { isAuthenticated } = this.props;
+    console.log(isAuthenticated);
+    if (isAuthenticated) {
+      console.log('navigate');
+      return <Navigate to="/Main" />;
+    }
     return (
       <Container className="mt-4">
         <h2 className="mb-4">Регистрация</h2>
@@ -115,9 +122,13 @@ class RegistrationPage extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.isAuthenticated
+});
+
 const mapDispatchToProps = (dispatch) => ({
   registerUser: (userData) => dispatch(registerUser(userData))
 });
 
-export default connect(null, mapDispatchToProps)(RegistrationPage);
+export default connect(mapStateToProps, mapDispatchToProps)(RegistrationPage);
 

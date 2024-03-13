@@ -7,7 +7,9 @@ export const loginUser = (userData) => {
       const response = await axios.post('https://camp-courses.api.kreosoft.space/login', userData);
       console.log(response.data.token);
       localStorage.setItem('token', response.data.token);
-      dispatch(loginSuccess(response.data.token));
+      console.log(userData);
+      console.log(userData.email);
+      dispatch(loginSuccess(response.data.token, userData.email));
     } catch (error) {
       console.log(error);
       console.log(error.response.data.message);
@@ -22,7 +24,7 @@ export const loginUser = (userData) => {
   };
 };
 
-export const loginSuccess = (token) => ({
+export const loginSuccess = (token, userEmail) => ({
   type: 'LOGIN_SUCCESS',
-  payload: token
+  payload: { token, userEmail }
 });
