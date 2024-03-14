@@ -20,7 +20,7 @@ const initialState = {
             isAuthenticated: true,
             userEmail: action.payload,
           };
-        case 'LOGOUT':
+        case 'LOGOUT_SUCCESS':
           return {
             ...state,
             token: null,

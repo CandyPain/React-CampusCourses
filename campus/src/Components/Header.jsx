@@ -4,6 +4,8 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import {Link} from 'react-router-dom';
 import { connect } from 'react-redux';
+import LogOutButton from "./LogOutButton";
+import {logOut} from "./Actions/PostLogout";
 
 class Header extends Component {
   render() {
@@ -19,7 +21,7 @@ class Header extends Component {
                 <>
                 {console.log("UE", userEmail)}
                   <Link to="/profile">{userEmail.userEmail}</Link>
-                  <Link to="/logout">Выход</Link>
+                  <span style={{ color: 'blue', cursor: 'pointer' }} onClick={this.handleLogout}>Выход</span>
                 </>
               ) : (
                 <>
