@@ -123,7 +123,7 @@ class RegistrationPage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.isAuthenticated
+  isAuthenticated: state.registration.isAuthenticated
 });
 
 const mapDispatchToProps = (dispatch) => ({

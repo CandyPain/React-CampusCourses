@@ -82,7 +82,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.isAuthenticated
+  isAuthenticated: state.registration.isAuthenticated
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

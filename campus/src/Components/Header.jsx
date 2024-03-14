@@ -15,7 +15,7 @@ class Header extends Component {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
             <Nav className="ml-auto">
-              {isAuthenticated ? ( // Проверяем аутентификацию пользователя
+              {isAuthenticated ? (
                 <>
                 {console.log("UE", userEmail)}
                   <Link to="/profile">{userEmail.userEmail}</Link>
@@ -36,8 +36,8 @@ class Header extends Component {
 }
 
 const mapStateToProps = state => ({
-  isAuthenticated: state.isAuthenticated,
-  userEmail: state.userEmail 
+  isAuthenticated: state.registration.isAuthenticated,
+  userEmail: state.registration.userEmail 
 });
 
 export default connect(mapStateToProps)(Header);
