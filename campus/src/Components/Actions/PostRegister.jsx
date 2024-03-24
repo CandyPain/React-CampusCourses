@@ -7,7 +7,7 @@ export const registerUser = (userData) => {
       const response = await axios.post('https://camp-courses.api.kreosoft.space/registration', userData);
       console.log(response.data.token);
       localStorage.setItem('token', response.data.token);
-      dispatch(registerSuccess(response.data.token));
+      dispatch(registerSuccess(response.data.token, userData.email));
     } catch (error) {
       console.log(error);
       alert('Registration failed:', error.message);
@@ -15,7 +15,7 @@ export const registerUser = (userData) => {
   };
 };
 
-export const registerSuccess = (token) => ({
+export const registerSuccess = (token, userEmail) => ({
   type: 'REGISTER_SUCCESS',
-  payload: token
+  payload: { token, userEmail }
 });

@@ -8,6 +8,11 @@ import LogOutButton from "./LogOutButton";
 import {logOut} from "./Actions/PostLogout";
 
 class Header extends Component {
+  handleLogout = () => {
+    console.log("handleLogout");
+    this.props.dispatch(logOut());
+    <Link to ="/login"></Link>
+  };
   render() {
     const { isAuthenticated, userEmail } = this.props;
     return (
