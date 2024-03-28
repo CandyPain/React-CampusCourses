@@ -44,7 +44,7 @@ class LoginPage extends Component {
     console.log(isAuthenticated);
     if (isAuthenticated) {
       console.log('navigate');
-      return <Navigate to="/Main" />;
+      return <Navigate to="/groups" />;
     }
     return (
       <Container className="mt-4">

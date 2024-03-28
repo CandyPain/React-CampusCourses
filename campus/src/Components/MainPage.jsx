@@ -9,6 +9,9 @@ import { Container, ListGroup, Button } from 'react-bootstrap';
 import EditGroupModal from './EditGroupModal';
 import CreateGroupModal from './CreateGroupModal';
 import DeleteGroupModal from './DeleteGroupModal';
+import { Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 class MainPage extends Component {
   state = {
@@ -77,6 +80,10 @@ class MainPage extends Component {
     this.setState({ showDeleteModal: false });
   };
 
+  handleToGroup = (groupId) => {
+    return <Navigate to='/login'/>
+  }
+
   renderButtons = () => {
     console.log('renderButtons');
     const { userRole } = this.props;
@@ -106,8 +113,8 @@ class MainPage extends Component {
         {this.renderButtons()}
         <ListGroup>
           {groups.map((group) => (
-            <ListGroup.Item key={group.id}>
-              {group.name}
+            <ListGroup.Item key={group.id} onClick={() => this.handleToGroup(group.id)}>
+                {group.name} 
               {userRole.isAdmin === true && (
                 <div className="d-flex justify-content-end">
                   <Button variant="warning" className="ml-2 mr-2" onClick={() => this.handleEditGroup(group.id,'', group.name)}>
