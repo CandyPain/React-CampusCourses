@@ -1,168 +1,137 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch} from 'react-redux';
 import { fetchGroups } from './Actions/GetGroups';
 import { fetchRole } from './Actions/GetRole';
-import {editGroup} from './Actions/PutGroupName'
-import {createGroup} from './Actions/PostCreateGroup'
-import {deleteGroup} from './Actions/DeleteGroup'
+import { editGroup } from './Actions/PutGroupName';
+import { createGroup } from './Actions/PostCreateGroup';
+import { deleteGroup } from './Actions/DeleteGroup';
 import { Container, ListGroup, Button } from 'react-bootstrap';
 import EditGroupModal from './EditGroupModal';
 import CreateGroupModal from './CreateGroupModal';
 import DeleteGroupModal from './DeleteGroupModal';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
 
-class MainPage extends Component {
-  state = {
-    showEditModal: false,
-    editedGroup: { id: '', name: '' , currentName: ''},
-    showCreateModal: false,
-    createdGroup: {name: ''},
-    showDeleteModal: false,
-    deletedGroup: {id: ''}
+const MainPage = () => {
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editedGroup, setEditedGroup] = useState({ id: '', name: '', currentName: '' });
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [createdGroup, setCreatedGroup] = useState({ name: '' });
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletedGroup, setDeletedGroup] = useState({ id: '' });
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const groups = useSelector(state => state.group.groupsList);
+  const userRole = useSelector(state => state.role.role);
+
+  useEffect(() => {
+    dispatch(fetchRole());
+    dispatch(fetchGroups());
+  }, [dispatch]);
+
+
+  const handleCreateGroup = () => {
+    setShowCreateModal(true);
   };
 
-  componentDidMount() {
-    this.props.fetchRole();
-    this.props.fetchGroups();
-  }
-
-  handleCreateGroup = () => {
-    this.setState({
-      showCreateModal:true
-    })
+  const handleEditGroup = (groupId, groupName, currentName) => {
+    setEditedGroup({ id: groupId, name: groupName, currentName: currentName });
+    setShowEditModal(true);
   };
 
-  handleEditGroup = (groupId, groupName, currentName) => {
-    console.log('handleEditGroup');
-    console.log(groupId);
-    this.setState({
-      showEditModal: true,
-      editedGroup: { id: groupId, name: groupName, currentName: currentName},
-    });
+  const handleSaveEdit = (groupId, groupName) => {
+    dispatch(editGroup(groupId, groupName));
+    setShowEditModal(false);
   };
 
-  handleSaveEdit = (groupId,groupName) => {
-    this.props.editGroup(groupId,groupName);
-    console.log('Сохранение изменений', groupName);
-    this.setState({ showEditModal: false });
+  const handleCreate = (groupName) => {
+    dispatch(createGroup(groupName));
+    setShowCreateModal(false);
   };
 
-  handleCreate = (groupName) => {
-    this.props.createGroup(groupName);
-    console.log('Создание группы', groupName);
-    this.setState({ showCreateModal: false });
+  const handleCloseEdit = () => {
+    setShowEditModal(false);
   };
 
-
-
-  handleCloseEdit = () => {
-    this.setState({ showEditModal: false });
+  const handleCloseCreate = () => {
+    setShowCreateModal(false);
   };
 
-  handleCloseCreate = () => {
-    this.setState({ showCreateModal: false });
+  const handleCloseDelete = () => {
+    setShowDeleteModal(false);
   };
 
-  handleCloseDelete = () => {
-    this.setState({ showDeleteModal: false });
+  const handleDeleteGroup = (groupId) => {
+    setDeletedGroup({ id: groupId });
+    setShowDeleteModal(true);
   };
 
-  handleDeleteGroup = (groupId) => {
-    console.log('handleDeleteGroup');
-    console.log(groupId);
-    this.setState({ showDeleteModal: true, deletedGroup:{id:groupId}});
+  const handleConfirmDeleteGroup = (groupId) => {
+    dispatch(deleteGroup(groupId));
+    setShowDeleteModal(false);
   };
 
-  handleConfirmDeleteGroup = (groupId) => {
-    this.props.deleteGroup(groupId);
-    this.setState({ showDeleteModal: false });
+    const handleToGroup = (groupId) => {
+      navigate(`/courses/${groupId}`);
   };
 
-  handleToGroup = (groupId) => {
-    return <Navigate to='/login'/>
-  }
-
-  renderButtons = () => {
-    console.log('renderButtons');
-    const { userRole } = this.props;
-    console.log(userRole);
+  const renderButtons = () => {
+    if (!userRole) {
+      return <div>Loading...</div>;
+    }
     if (userRole.isAdmin === true) {
       return (
-        <Button variant="primary" className="mb-3" onClick={this.handleCreateGroup}>
+        <Button variant="primary" className="mb-3" onClick={handleCreateGroup}>
           Создать
         </Button>
       );
     }
-    return null; 
+    return null;
   };
 
-  render() {
-    const { groups, userRole } = this.props;
-    const { editedGroup, showEditModal } = this.state;
-    const { createdGroup, showCreateModal } = this.state;
-    const { deletedGroup,showDeleteModal} = this.state;
-    console.log('render');
-    if(!userRole) {
-      return <div>Loading...</div>; 
-    }
-    return (
-      <Container className="mt-4">
-        <h1 className="text-center mb-4">Группы кампусных курсов</h1>
-        {this.renderButtons()}
-        <ListGroup>
-          {groups.map((group) => (
-            <ListGroup.Item key={group.id} onClick={() => this.handleToGroup(group.id)}>
-                {group.name} 
-              {userRole.isAdmin === true && (
-                <div className="d-flex justify-content-end">
-                  <Button variant="warning" className="ml-2 mr-2" onClick={() => this.handleEditGroup(group.id,'', group.name)}>
-                    Редактировать
-                  </Button>
-                  <Button variant="danger" className="ml-2" onClick={() => this.handleDeleteGroup(group.id)}>
-                    Удалить
-                  </Button>
-                </div>
-              )}
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
+  return (
+    <Container className="mt-4">
+      <h1 className="text-center mb-4">Группы кампусных курсов</h1>
+      {renderButtons()}
+      <ListGroup>
+        {groups.map((group) => (
+          <ListGroup.Item key={group.id} onClick={() => handleToGroup(group.id)}>
+            {group.name}
+            {userRole.isAdmin === true && (
+              <div className="d-flex justify-content-end">
+                <Button variant="warning" className="ml-2 mr-2" onClick={() => handleEditGroup(group.id, '', group.name)}>
+                  Редактировать
+                </Button>
+                <Button variant="danger" className="ml-2" onClick={() => handleDeleteGroup(group.id)}>
+                  Удалить
+                </Button>
+              </div>
+            )}
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
 
-        <EditGroupModal
-          show={showEditModal}
-          handleClose={this.handleCloseEdit}
-          handleSave={this.handleSaveEdit}
-          editedGroup={editedGroup}
-        />
-        <CreateGroupModal
-          show={showCreateModal}
-          handleClose={this.handleCloseCreate}
-          handleCreate={this.handleCreate}
-          createdGroup={createdGroup}
-        />
-        <DeleteGroupModal
-          show={showDeleteModal}
-          handleClose={this.handleCloseDelete}
-          handleDelete={this.handleConfirmDeleteGroup}
-          deletedGroup={deletedGroup}
-        />
-      </Container>
-    );
-  }
-}
-
-const mapStateToProps = (state) => ({
-  groups: state.group.groupsList,
-  userRole:state.role.role,
-});
-
-const mapDispatchToProps = {
-  fetchGroups,
-  fetchRole,
-  editGroup,
-  createGroup,
-  deleteGroup,
+      <EditGroupModal
+        show={showEditModal}
+        handleClose={handleCloseEdit}
+        handleSave={handleSaveEdit}
+        editedGroup={editedGroup}
+      />
+      <CreateGroupModal
+        show={showCreateModal}
+        handleClose={handleCloseCreate}
+        handleCreate={handleCreate}
+        createdGroup={createdGroup}
+      />
+      <DeleteGroupModal
+        show={showDeleteModal}
+        handleClose={handleCloseDelete}
+        handleDelete={handleConfirmDeleteGroup}
+        deletedGroup={deletedGroup}
+      />
+    </Container>
+  );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainPage);
+export default MainPage;
