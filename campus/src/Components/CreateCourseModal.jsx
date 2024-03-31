@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const CreateCourseModal = ({ show, handleClose, handleСreateCourse,groupId }) => {
   const [courseData, setCourseData] = useState({
@@ -12,6 +14,15 @@ const CreateCourseModal = ({ show, handleClose, handleСreateCourse,groupId }) =
     mainTeacherId: '',
   });
 
+  const quillModules = {
+    toolbar: [
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      ['link', 'image', 'video'],
+      ['clean']
+    ],
+  };
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
@@ -32,6 +43,20 @@ const CreateCourseModal = ({ show, handleClose, handleСreateCourse,groupId }) =
   const handleSave = () => {
     handleСreateCourse(groupId,courseData);
     handleClose();
+  };
+
+  const handleChangeRequirements = (content) => {
+    setCourseData((prevData) => ({
+      ...prevData,
+      requirements: content,
+    }));
+  };
+
+  const handleChangeAnnotations = (content) => {
+    setCourseData((prevData) => ({
+      ...prevData,
+      annotations: content,
+    }));
   };
 
   return (
@@ -96,24 +121,24 @@ const CreateCourseModal = ({ show, handleClose, handleСreateCourse,groupId }) =
           </Form.Group>
           <Form.Group controlId="formRequirements">
             <Form.Label>Требования</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              placeholder="Введите требования курса"
-              name="requirements"
+            <ReactQuill
               value={courseData.requirements}
-              onChange={handleChange}
+              onChange={handleChangeRequirements}
+              modules={quillModules} 
+              formats={[
+                'header', 'bold', 'italic', 'underline', 'strike', 'list', 'bullet', 'link', 'image', 'video'
+              ]}
             />
           </Form.Group>
           <Form.Group controlId="formAnnotation">
             <Form.Label>Аннотация</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              placeholder="Введите аннотацию курса"
-              name="annotations"
+            <ReactQuill
               value={courseData.annotations}
-              onChange={handleChange}
+              onChange={handleChangeAnnotations}
+              modules={quillModules} 
+              formats={[
+                'header', 'bold', 'italic', 'underline', 'strike', 'list', 'bullet', 'link', 'image', 'video'
+              ]}
             />
           </Form.Group>
           <Form.Group controlId="formMainTeacher">
