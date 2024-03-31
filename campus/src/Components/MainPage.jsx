@@ -12,6 +12,8 @@ import DeleteGroupModal from './DeleteGroupModal';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
+export const SET_GROUP_ID = 'SET_GROUP_ID'
+
 const MainPage = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editedGroup, setEditedGroup] = useState({ id: '', name: '', currentName: '' });
@@ -30,6 +32,10 @@ const MainPage = () => {
     dispatch(fetchGroups());
   }, [dispatch]);
 
+  useEffect(() => {
+    console.log('userRole:', userRole);
+    console.log('groups:', groups);
+  }, [userRole, groups]);
 
   const handleCreateGroup = () => {
     setShowCreateModal(true);
@@ -73,6 +79,10 @@ const MainPage = () => {
   };
 
     const handleToGroup = (groupId) => {
+      dispatch({
+        type: SET_GROUP_ID,
+        payload: groupId,
+      });
       navigate(`/courses/${groupId}`);
   };
 
@@ -98,7 +108,7 @@ const MainPage = () => {
         {groups.map((group) => (
           <ListGroup.Item key={group.id} onClick={() => handleToGroup(group.id)}>
             {group.name}
-            {userRole.isAdmin === true && (
+            {userRole && userRole.isAdmin === true && (
               <div className="d-flex justify-content-end">
                 <Button variant="warning" className="ml-2 mr-2" onClick={() => handleEditGroup(group.id, '', group.name)}>
                   Редактировать

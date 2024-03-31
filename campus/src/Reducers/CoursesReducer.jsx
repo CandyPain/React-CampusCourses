@@ -3,9 +3,11 @@ import {
     GET_COURSES_SUCCESS,
     GET_COURSES_ERROR,
   } from '../Components/Actions/GetCourses';
+  import { SET_GROUP_ID } from '../Components/MainPage';
   
   const initialState = {
     coursesList: [],
+    groupId: '',
     error: null,
   };
   
@@ -20,6 +22,11 @@ import {
         return {
           ...state,
           error: action.payload,
+        };
+      case SET_GROUP_ID: 
+        return {
+          ...state,
+          groupId: action.payload,
         };
       default:
         return state;
