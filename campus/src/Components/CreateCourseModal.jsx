@@ -1,16 +1,25 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-const CreateCourseModal = ({ show, handleClose, handleСreateCourse }) => {
+const CreateCourseModal = ({ show, handleClose, handleСreateCourse,groupId }) => {
   const [courseData, setCourseData] = useState({
     name: '',
     startYear: '',
-    totalSeats: '',
+    maximumStudentsCount: '',
     semester: '',
     requirements: '',
-    annotation: '',
-    mainTeacher: '',
+    annotations: '',
+    mainTeacherId: '',
   });
+
+
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setCourseData((prevData) => ({
+      ...prevData,
+      [name]: checked ? e.target.value : '',
+    }));
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,7 +30,7 @@ const CreateCourseModal = ({ show, handleClose, handleСreateCourse }) => {
   };
 
   const handleSave = () => {
-    handleСreateCourse(courseData);
+    handleСreateCourse(groupId,courseData);
     handleClose();
   };
 
@@ -52,27 +61,38 @@ const CreateCourseModal = ({ show, handleClose, handleСreateCourse }) => {
               onChange={handleChange}
             />
           </Form.Group>
-          <Form.Group controlId="formTotalSeats">
+          <Form.Group controlId="formMaximumStudentsCount">
             <Form.Label>Общее количество мест</Form.Label>
             <Form.Control
               type="number"
               placeholder="Введите общее количество мест"
-              name="totalSeats"
-              value={courseData.totalSeats}
+              name="maximumStudentsCount"
+              value={courseData.maximumStudentsCount}
               onChange={handleChange}
             />
           </Form.Group>
           <Form.Group controlId="formSemester">
             <Form.Label>Семестр</Form.Label>
-            <Form.Control
-              as="select"
-              name="semester"
-              value={courseData.semester}
-              onChange={handleChange}
-            >
-              <option value="autumn">Осенний</option>
-              <option value="spring">Весенний</option>
-            </Form.Control>
+            <div>
+              <Form.Check
+                type="checkbox"
+                label="Spring"
+                name="semester"
+                id="semesterSpring"
+                value="Spring"
+                checked={courseData.semester === 'Spring'}
+                onChange={handleCheckboxChange}
+              />
+              <Form.Check
+                type="checkbox"
+                label="Autumn"
+                name="semester"
+                id="semesterAutumn"
+                value="Autumn"
+                checked={courseData.semester === 'Autumn'}
+                onChange={handleCheckboxChange}
+              />
+            </div>
           </Form.Group>
           <Form.Group controlId="formRequirements">
             <Form.Label>Требования</Form.Label>
@@ -91,8 +111,8 @@ const CreateCourseModal = ({ show, handleClose, handleСreateCourse }) => {
               as="textarea"
               rows={3}
               placeholder="Введите аннотацию курса"
-              name="annotation"
-              value={courseData.annotation}
+              name="annotations"
+              value={courseData.annotations}
               onChange={handleChange}
             />
           </Form.Group>
@@ -101,8 +121,8 @@ const CreateCourseModal = ({ show, handleClose, handleСreateCourse }) => {
             <Form.Control
               type="text"
               placeholder="Введите имя основного преподавателя"
-              name="mainTeacher"
-              value={courseData.mainTeacher}
+              name="mainTeacherId"
+              value={courseData.mainTeacherId}
               onChange={handleChange}
             />
           </Form.Group>

@@ -12,8 +12,9 @@ export const createCourse = (groupId,courseInfo) => async (dispatch) => {
         Authorization: `Bearer ${localStorage.getItem('token')}`
       }});
     dispatch({ type: CREATE_COURSE_SUCCESS, payload: response.data });
-    dispatch(getCourses());
+    dispatch(getCourses(groupId));
   } catch (error) {
+    console.log(error);
     dispatch({ type: CREATE_COURSE_FAILURE, payload: error.message });
   }
 };

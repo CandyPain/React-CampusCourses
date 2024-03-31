@@ -48,36 +48,54 @@ const CourseList = () => {
   };
 
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Created':
+        return 'gray';
+      case 'OpenForAssigning':
+        return 'green';
+      case 'Started':
+        return 'blue';
+      case 'Finished':
+        return 'red';
+      default:
+        return 'black'; 
+    }
+  };
+
   return (
     <Container className="mt-4">
       <h1 className="text-center mb-4">Группы кампусных курсов</h1>
       {renderCreateCourseButton()}
       <ListGroup>
-        {courses.map(course => (
+        {courses.map((course) => (
           <ListGroup.Item key={course.id}>
             <div className="d-flex justify-content-between">
-              <div>
-                <p>Название группы: {course.groupName}</p>
-                <p>Учебный год: {course.academicYear}</p>
+              <div style={{ flexGrow: 1 }}>
+                <h5 style={{ fontWeight: 'bold' }}>{course.name}</h5>
+                <p>Учебный год: {course.startYear}</p>
                 <p>Семестр: {course.semester}</p>
+                <p style={{ color: '#808080', fontSize: '0.8rem' }}>
+                  Мест всего: {course.maximumStudentsCount} | Мест свободно: {course.remainingSlotsCount}
+                </p>
               </div>
               <div>
-                <p>Мест всего: {course.totalSeats}</p>
-                <p>Мест свободно: {course.availableSeats}</p>
-                <p>Статус: {course.status}</p>
+              <p style={{ color: getStatusColor(course.status) }}>{course.status}</p>
               </div>
             </div>
           </ListGroup.Item>
         ))}
       </ListGroup>
-    
+  
       <CreateCourseModal
         show={showСreateCourseModal}
         handleClose={handleClose}
         handleСreateCourse={handleСreateCourse}
+        groupId={groupId}
       />
-          </Container>
+    </Container>
   );
+  
   
 };
 
