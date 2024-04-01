@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch} from 'react-redux';
-import { Container, Table } from 'react-bootstrap';
+import { Container, Table, ListGroup } from 'react-bootstrap';
 import { fetchCourseDetails } from './Actions/GetDetails';
 import { fetchRole } from './Actions/GetRole';
 import { Nav, Row, Col, Button } from 'react-bootstrap';
@@ -12,6 +12,8 @@ import { statusChange } from './Actions/PostCourseStatus';
 import EditStatusModal from './EditStatusModal';
 import { acceptCourse } from './Actions/PostAcceptCourse';
 import AcceptCourseModal from './AcceptCourseModal';
+import { CreateNotification } from './Actions/PostCreateNotification';
+import CreateNotificationModal from './CreateNotificationModal';
 
 const CourseDetailsPage = () => {
 
@@ -59,6 +61,11 @@ const CourseDetailsPage = () => {
     setShowEditTeacherCourseModal(false);
   };
 
+  const handleCreateNotification = (courseId, notInfo) => {
+    dispatch(CreateNotification(courseId,notInfo));
+    setShowCreateNotificationModal(false);
+  };
+
 
   const handleAcceptCourse = (courseId) => {
     dispatch(acceptCourse(courseId));
@@ -83,6 +90,10 @@ const CourseDetailsPage = () => {
 
   const handleClose = () => {
     setShowEditCourseModal(false);
+  };
+
+  const handleCloseNotification = () => {
+    setShowCreateNotificationModal(false);
   };
 
   const handleEditTeacherClose = () => {
@@ -211,12 +222,17 @@ const CourseDetailsPage = () => {
                   Создать уведомление
                 </Button>
                   )}
-              {courseDetails.notifications.map((notification, index) => (
-                <div key={index}>
-                  <p>{notification.text}</p>
-                  <small>{notification.date}</small>
-                </div>
-              ))}
+                  <ListGroup className="mt-3">
+                    {courseDetails.notifications.map((notification, index) => (
+                    <ListGroup.Item
+                      key={index}
+                      className={notification.isImportant ? 'important-notification' : ''}
+                      style={{ backgroundColor: notification.isImportant ? 'red' : 'inherit', color: notification.isImportant ? 'white' : 'black' }}
+                    >
+                  {notification.text}
+                    </ListGroup.Item>
+                  ))}
+                  </ListGroup>
             </div>
           )}
           <Nav variant="tabs" className="mt-4">
@@ -281,6 +297,12 @@ const CourseDetailsPage = () => {
     handleClose={handleCloseAccept}
     handleAcceptCourse={handleAcceptCourse}
     courseId={courseId}
+      />
+      <CreateNotificationModal
+      show={showCreateNotificationModal}
+      handleClose={handleCloseNotification}
+      handleCreateNotification={handleCreateNotification}
+      courseId={courseId}
       />
     </Container>
   );

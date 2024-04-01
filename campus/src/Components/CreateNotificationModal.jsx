@@ -1,20 +1,30 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
-const CreateNotificationModal = ({ show, handleClose, handleCreateNotification }) => {
-  const [notificationText, setNotificationText] = useState('');
-  const [isImportant, setIsImportant] = useState(false);
+const CreateNotificationModal = ({ show, handleClose, courseId, handleCreateNotification }) => {
+  const [notificationData, setNotificationData] = useState({
+    text: '',
+    isImportant: false
+  });
 
   const handleTextChange = (e) => {
-    setNotificationText(e.target.value);
+    const { name, value } = e.target;
+    setNotificationData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
   };
 
   const handleCheckboxChange = (e) => {
-    setIsImportant(e.target.checked);
+    const { name, checked } = e.target;
+    setNotificationData((prevData) => ({
+      ...prevData,
+      [name]: checked
+    }));
   };
 
   const handleCreate = () => {
-    handleCreateNotification({ text: notificationText, isImportant: isImportant });
+    handleCreateNotification(courseId,notificationData);
     handleClose();
   };
 
@@ -26,10 +36,22 @@ const CreateNotificationModal = ({ show, handleClose, handleCreateNotification }
       <Modal.Body>
         <Form.Group controlId="notificationText">
           <Form.Label>Текст уведомления</Form.Label>
-          <Form.Control as="textarea" rows={3} value={notificationText} onChange={handleTextChange} />
+          <Form.Control
+            as="textarea"
+            rows={3}
+            name="text"
+            value={notificationData.text}
+            onChange={handleTextChange}
+          />
         </Form.Group>
         <Form.Group controlId="isImportant">
-          <Form.Check type="checkbox" label="Важное" checked={isImportant} onChange={handleCheckboxChange} />
+          <Form.Check
+            type="checkbox"
+            label="Важное"
+            name="isImportant"
+            checked={notificationData.isImportant}
+            onChange={handleCheckboxChange}
+          />
         </Form.Group>
       </Modal.Body>
       <Modal.Footer>
