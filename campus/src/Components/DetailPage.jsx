@@ -3,7 +3,7 @@ import { useSelector, useDispatch} from 'react-redux';
 import { Container, Table, ListGroup } from 'react-bootstrap';
 import { fetchCourseDetails } from './Actions/GetDetails';
 import { fetchRole } from './Actions/GetRole';
-import { Nav, Row, Col, Button } from 'react-bootstrap';
+import { Nav, Row, Col, Button, Badge } from 'react-bootstrap';
 import EditCourseModal from './EditCourseModal'
 import { editCourse } from './Actions/PutEditCourse';
 import { editCourseTeacher } from './Actions/PutEditCourse';
@@ -14,6 +14,8 @@ import { acceptCourse } from './Actions/PostAcceptCourse';
 import AcceptCourseModal from './AcceptCourseModal';
 import { CreateNotification } from './Actions/PostCreateNotification';
 import CreateNotificationModal from './CreateNotificationModal';
+import {editStudentStatus} from './Actions/PostStudentStatus'
+import {loadProfileData} from './Actions/GetProfile'
 
 const CourseDetailsPage = () => {
 
@@ -27,9 +29,11 @@ const CourseDetailsPage = () => {
   const dispatch = useDispatch();
   const { courseDetails, error } = useSelector((state) => state.detail);
   const userRole = useSelector(state => state.role.role);
+  const userEmail = useSelector(state => state.profile.email);
   const hasAccept = useSelector(state => state.detail.hasAccept);
   useEffect(() => {
     dispatch(fetchRole());
+    dispatch(loadProfileData);
     dispatch(fetchCourseDetails(courseId));
   }, [dispatch]);
   
@@ -112,6 +116,29 @@ const CourseDetailsPage = () => {
     setShowAcceptModal(false);
   };
   
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'InQueue':
+        return 'blue';
+      case 'Accepted':
+        return 'green';
+      case 'Declined':
+        return 'red';
+      default:
+        return 'black'; 
+    }
+  };
+
+  const getBadgeVariant = (result) => {
+    switch (result) {
+      case 'Passed':
+        return 'badge bg-success'; 
+      case 'Failed':
+        return 'badge bg-danger'; 
+      default:
+        return 'badge bg-secondary'; 
+    }
+  };
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -248,16 +275,49 @@ const CourseDetailsPage = () => {
             </Nav.Item>
           </Nav>
           {activeTab === 'students' && (
-            <div className="mt-4">
-              <h3>Студенты</h3>
-              {courseDetails.students.map((student, index) => (
-                <div key={index}>
-                  <p>{student.name}</p>
-                  <small>{student.email}</small>
-                </div>
-              ))}
+  <div className="mt-4">
+    <h3>Студенты</h3>
+    <ListGroup className="mt-3">
+      {courseDetails.students.map((student, index) => (
+        <ListGroup.Item key={index} className="d-flex justify-content-between align-items-center">
+          <div>
+            <p style={{ fontWeight: 'bold' }}>{student.name}</p>
+            <div>
+              <span style={{ color: getStatusColor(student.status) }}>
+                {student.status}
+              </span>
             </div>
-          )}
+            <small>{student.email}</small>
+          </div>
+          <div className="d-flex align-items-center">
+            {((student.status === 'Accepted' && (userRole.isAdmin || userRole.isTeacher)) || (student.status === 'Accepted' && userRole.isStudent && student.email === userEmail)) && (
+              <div className="d-flex flex-column align-items-end w-100" >
+                <div className="mb-2">
+                  <small>Результат промежуточной аттестации   :</small>
+                  <span class={getBadgeVariant(student.midtermResult)} ml-2>{student.midtermResult}</span>
+                </div>
+                <div>
+                  <small>Результат финальной аттестации   :</small>
+                  <span class={getBadgeVariant(student.finalResult)} ml-2>{student.finalResult}</span>
+                </div>
+              </div>
+            )}
+            {student.status === 'InQueue' && (
+              <div className="d-flex align-items-center">
+                <Button variant="primary" className="mr-2" onClick={() => {dispatch(editStudentStatus(courseId,student.id,{status:'Accepted'}))}}>Принять</Button>
+                <Button variant="danger" onClick={() => {dispatch(editStudentStatus(courseId,student.id,{status:'Declined'}))}}>Отклонить</Button>
+              </div>
+            )}
+          </div>
+        </ListGroup.Item>
+      ))}
+    </ListGroup>
+  </div>
+)}
+
+
+
+
           {activeTab === 'teachers' && (
             <div className="mt-4">
               <h3>Преподаватели</h3>
