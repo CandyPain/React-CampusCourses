@@ -16,11 +16,15 @@ import { CreateNotification } from './Actions/PostCreateNotification';
 import CreateNotificationModal from './CreateNotificationModal';
 import {editStudentStatus} from './Actions/PostStudentStatus'
 import {loadProfileData} from './Actions/GetProfile'
+import { editStudentMark } from './Actions/PostEditMark';
+import EditGrageModal from './EditGradeModal';
+
+export const SET_STUDENT_INFO = 'SET_STUDENT_INFO';
 
 const CourseDetailsPage = () => {
 
-
   const [showEditStatusModal, setShowEditStatusModal] = useState(false);
+  const [showEditGrageModal, setShowEditGrageModal] = useState(false);
   const [showCreateNotificationModal, setShowCreateNotificationModal] = useState(false);
   const [showAcceptModal, setShowAcceptModal] = useState(false);
   const  courseId  = useSelector((state) => state.detail.courseId)
@@ -28,6 +32,7 @@ const CourseDetailsPage = () => {
   const [showEditTeacherCourseModal, setShowEditTeacherCourseModal] = useState(false);
   const dispatch = useDispatch();
   const { courseDetails, error } = useSelector((state) => state.detail);
+  const {studentId, studentName} = useSelector((state) => state.detail);
   const userRole = useSelector(state => state.role.role);
   const userEmail = useSelector(state => state.profile.email);
   const hasAccept = useSelector(state => state.detail.hasAccept);
@@ -65,6 +70,11 @@ const CourseDetailsPage = () => {
     setShowEditTeacherCourseModal(false);
   };
 
+  const handleSubmitEditMark = (courseId, studentId,data) => {
+    dispatch(editStudentMark(courseId,studentId,data));
+    setShowEditTeacherCourseModal(false);
+  };
+
   const handleCreateNotification = (courseId, notInfo) => {
     dispatch(CreateNotification(courseId,notInfo));
     setShowCreateNotificationModal(false);
@@ -86,6 +96,14 @@ const CourseDetailsPage = () => {
 
   const handleShowEditCourse = () => {
     setShowEditCourseModal(true);
+  };
+
+  const handleShowEditMark = (studentId,studentName) => {
+    if(userRole.isAdmin || userRole.isTeacher)
+    {
+    dispatch({ type: SET_STUDENT_INFO, payload: {studentId,studentName} });
+    setShowEditGrageModal(true);
+    }
   };
 
   const handleShowEditTeacherCourse = () => {
@@ -110,6 +128,10 @@ const CourseDetailsPage = () => {
 
   const handleCloseStatus = () => {
     setShowEditStatusModal(false);
+  };
+
+  const handleCloseEditGrageModal = () => {
+    setShowEditGrageModal(false);
   };
 
   const handleCloseAccept = () => {
@@ -294,11 +316,11 @@ const CourseDetailsPage = () => {
               <div className="d-flex flex-column align-items-end w-100" >
                 <div className="mb-2">
                   <small>Результат промежуточной аттестации   :</small>
-                  <span class={getBadgeVariant(student.midtermResult)} ml-2>{student.midtermResult}</span>
+                  <span class={getBadgeVariant(student.midtermResult)} ml-2 onClick={()=> {handleShowEditMark(student.id,student.name)}}>{student.midtermResult}</span>
                 </div>
                 <div>
                   <small>Результат финальной аттестации   :</small>
-                  <span class={getBadgeVariant(student.finalResult)} ml-2>{student.finalResult}</span>
+                  <span class={getBadgeVariant(student.finalResult)} ml-2 onClick={()=> {handleShowEditMark(student.id,student.name)}}>{student.finalResult}</span>
                 </div>
               </div>
             )}
@@ -363,6 +385,14 @@ const CourseDetailsPage = () => {
       handleClose={handleCloseNotification}
       handleCreateNotification={handleCreateNotification}
       courseId={courseId}
+      />
+            <EditGrageModal
+      show={showEditGrageModal}
+      handleClose={handleCloseEditGrageModal}
+      handleSubmitEditMark={handleSubmitEditMark}
+      studentName={studentName}
+      courseId={courseId}
+      studentId={studentId}
       />
     </Container>
   );
