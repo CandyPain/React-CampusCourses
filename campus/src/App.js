@@ -8,6 +8,7 @@ import LoginPage from './Components/LoginPage'
 import MainPage from './Components/MainPage'
 import ProfilePage from './Components/ProfilePage'
 import CoursesPage from './Components/CoursesPage'
+import DetailPage from './Components/DetailPage'
 
 const App = () => {
   return (
@@ -20,7 +21,8 @@ const App = () => {
           <Route exact path="/login" element={<LoginPage/>} />
           <Route exact path="/groups" element={<MainPage/>} />
           <Route exact path="/profile" element={<ProfilePage/>} />
-          <Route exact path = "/courses/:groupId" element={<CoursesPage/>}/>
+          <Route exact path = "/groups/:groupId" element={<CoursesPage/>}/>
+          <Route exact path = "/courses/:courseId" element={<DetailPage/>}/>
       </Routes>
       </Router>
     </div>

@@ -83,7 +83,7 @@ const MainPage = () => {
         type: SET_GROUP_ID,
         payload: groupId,
       });
-      navigate(`/courses/${groupId}`);
+      navigate(`/groups/${groupId}`);
   };
 
   const renderButtons = () => {

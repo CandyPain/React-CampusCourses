@@ -5,6 +5,10 @@ import { getCourses } from './Actions/GetCourses';
 import CreateCourseModal from './CreateCourseModal';
 import { createCourse } from './Actions/PostCreateCourse';
 import { fetchRole } from './Actions/GetRole';
+import { useNavigate } from 'react-router-dom';
+
+export const SET_COURSE_ID = 'SET_COURSE_ID'
+
 
 const CourseList = () => {
   const courses = useSelector(state => state.course.coursesList);
@@ -12,6 +16,7 @@ const CourseList = () => {
   const userRole = useSelector(state => state.role.role);
   const groupId = useSelector(state => state.course.groupId);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(fetchRole());
@@ -63,13 +68,22 @@ const CourseList = () => {
     }
   };
 
+  const handleToCourse = (courseId) => {
+    console.log('handleToCourse', courseId);
+    dispatch({
+      type: SET_COURSE_ID,
+      payload: courseId,
+    });
+    navigate(`/courses/${courseId}`);
+  }
+
   return (
     <Container className="mt-4">
       <h1 className="text-center mb-4">Группы кампусных курсов</h1>
       {renderCreateCourseButton()}
       <ListGroup>
         {courses.map((course) => (
-          <ListGroup.Item key={course.id}>
+          <ListGroup.Item key={course.id} onClick={() => handleToCourse(course.id)}>
             <div className="d-flex justify-content-between">
               <div style={{ flexGrow: 1 }}>
                 <h5 style={{ fontWeight: 'bold' }}>{course.name}</h5>
