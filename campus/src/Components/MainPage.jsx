@@ -41,7 +41,9 @@ const MainPage = () => {
     setShowCreateModal(true);
   };
 
-  const handleEditGroup = (groupId, groupName, currentName) => {
+  const handleEditGroup = (e,groupId, groupName, currentName) => {
+    e.stopPropagation();
+    e.preventDefault();
     setEditedGroup({ id: groupId, name: groupName, currentName: currentName });
     setShowEditModal(true);
   };
@@ -68,7 +70,9 @@ const MainPage = () => {
     setShowDeleteModal(false);
   };
 
-  const handleDeleteGroup = (groupId) => {
+  const handleDeleteGroup = (e, groupId) => {
+    e.stopPropagation();
+    e.preventDefault();
     setDeletedGroup({ id: groupId });
     setShowDeleteModal(true);
   };
@@ -110,10 +114,10 @@ const MainPage = () => {
             {group.name}
             {userRole && userRole.isAdmin === true && (
               <div className="d-flex justify-content-end">
-                <Button variant="warning" className="ml-2 mr-2" onClick={() => handleEditGroup(group.id, '', group.name)}>
+                <Button variant="warning" className="ml-2 mr-2" onClick={(e) => handleEditGroup(e,group.id, '', group.name)}>
                   Редактировать
                 </Button>
-                <Button variant="danger" className="ml-2" onClick={() => handleDeleteGroup(group.id)}>
+                <Button variant="danger" className="ml-2" onClick={(e) => handleDeleteGroup(e,group.id)}>
                   Удалить
                 </Button>
               </div>

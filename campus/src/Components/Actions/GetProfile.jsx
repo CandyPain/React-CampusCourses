@@ -11,14 +11,6 @@ export const loadProfileData = () => async (dispatch) => {
     });
     console.log('profile');
     console.log(response);
-    const response2 = await axios.get('https://camp-courses.api.kreosoft.space/users', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
-      }
-    });
-
-    console.log('users');
-    console.log(response2);
     dispatch({
       type: PROFILE_LOADED,
       payload: response.data,
