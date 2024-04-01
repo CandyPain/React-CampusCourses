@@ -3,10 +3,13 @@ import { useSelector, useDispatch} from 'react-redux';
 import { Container, Table } from 'react-bootstrap';
 import { fetchCourseDetails } from './Actions/GetDetails';
 import { fetchRole } from './Actions/GetRole';
-import { Nav, Row, Col } from 'react-bootstrap';
+import { Nav, Row, Col, Button } from 'react-bootstrap';
+import EditCourseModal from './EditCourseModal'
+import { editCourse } from './Actions/PutEditCourse';
 
 const CourseDetailsPage = () => {
   const  courseId  = useSelector((state) => state.detail.courseId)
+  const [showEditCourseModal, setShowEditCourseModal] = useState(false);
   const dispatch = useDispatch();
   const { courseDetails, error } = useSelector((state) => state.detail);
   const userRole = useSelector(state => state.role.role);
@@ -24,6 +27,18 @@ const CourseDetailsPage = () => {
     setActiveTab(tab);
   };
 
+  const handleEditCourse = (courseId, courseInfo) => {
+    dispatch(editCourse(courseId,courseInfo));
+    setShowEditCourseModal(false);
+  };
+
+  const handleShowEditCourse = () => {
+    setShowEditCourseModal(true);
+  };
+
+  const handleClose = () => {
+    setShowEditCourseModal(false);
+  };
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -34,7 +49,14 @@ const CourseDetailsPage = () => {
       {courseDetails && (
         <>
           <h1 className="text-center mb-4">{courseDetails.name}</h1>
+          <div className="d-flex justify-content-between align-items-center mb-4">
           <h2>Основные данные курса</h2>
+          {(userRole.isAdmin || userRole.isTeacher) && (
+            <Button variant="warning" onClick={handleShowEditCourse} className="mt-3 float-right">
+              Редактировать
+            </Button>
+          )}
+          </div>
           <Table striped bordered>
             <tbody>
               <tr>
@@ -134,6 +156,13 @@ const CourseDetailsPage = () => {
           )}
         </>
       )}
+      <EditCourseModal
+    show={showEditCourseModal}
+    handleClose={handleClose}
+    handleEditCourse={handleEditCourse}
+    courseId={courseId}
+    initialCourseData={courseDetails}
+      />
     </Container>
   );
 };
