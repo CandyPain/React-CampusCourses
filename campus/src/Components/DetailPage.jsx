@@ -6,13 +6,26 @@ import { fetchRole } from './Actions/GetRole';
 import { Nav, Row, Col, Button } from 'react-bootstrap';
 import EditCourseModal from './EditCourseModal'
 import { editCourse } from './Actions/PutEditCourse';
+import { editCourseTeacher } from './Actions/PutEditCourse';
+import EditCourseModalTeacher from './EditCourseModalTeacher';
+import { statusChange } from './Actions/PostCourseStatus';
+import EditStatusModal from './EditStatusModal';
+import { acceptCourse } from './Actions/PostAcceptCourse';
+import AcceptCourseModal from './AcceptCourseModal';
 
 const CourseDetailsPage = () => {
+
+
+  const [showEditStatusModal, setShowEditStatusModal] = useState(false);
+  const [showCreateNotificationModal, setShowCreateNotificationModal] = useState(false);
+  const [showAcceptModal, setShowAcceptModal] = useState(false);
   const  courseId  = useSelector((state) => state.detail.courseId)
   const [showEditCourseModal, setShowEditCourseModal] = useState(false);
+  const [showEditTeacherCourseModal, setShowEditTeacherCourseModal] = useState(false);
   const dispatch = useDispatch();
   const { courseDetails, error } = useSelector((state) => state.detail);
   const userRole = useSelector(state => state.role.role);
+  const hasAccept = useSelector(state => state.detail.hasAccept);
   useEffect(() => {
     dispatch(fetchRole());
     dispatch(fetchCourseDetails(courseId));
@@ -32,13 +45,62 @@ const CourseDetailsPage = () => {
     setShowEditCourseModal(false);
   };
 
+  const handleShowAcceptCourse = () => {
+    setShowAcceptModal(true);
+  };
+
+  const handleEditStatus = (courseId, courseInfo) => {
+    dispatch(statusChange(courseId,courseInfo));
+    setShowEditStatusModal(false);
+  };
+
+  const handleEditTeacherCourse = (courseId, courseInfo) => {
+    dispatch(editCourseTeacher(courseId,courseInfo));
+    setShowEditTeacherCourseModal(false);
+  };
+
+
+  const handleAcceptCourse = (courseId) => {
+    dispatch(acceptCourse(courseId));
+    setShowAcceptModal(false);
+  };
+
+  const handleShowEditStatus = () => {
+    setShowEditStatusModal(true);
+  };
+  
+  const handleShowCreateNotification = () => {
+    setShowCreateNotificationModal(true);
+  };
+
   const handleShowEditCourse = () => {
     setShowEditCourseModal(true);
+  };
+
+  const handleShowEditTeacherCourse = () => {
+    setShowEditTeacherCourseModal(true);
   };
 
   const handleClose = () => {
     setShowEditCourseModal(false);
   };
+
+  const handleEditTeacherClose = () => {
+    setShowEditCourseModal(false);
+  };
+
+  const handleSaveStatus = () => {
+    setShowEditStatusModal(false);
+  };
+
+  const handleCloseStatus = () => {
+    setShowEditStatusModal(false);
+  };
+
+  const handleCloseAccept = () => {
+    setShowAcceptModal(false);
+  };
+  
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -52,17 +114,44 @@ const CourseDetailsPage = () => {
           <div className="d-flex justify-content-between align-items-center mb-4">
           <h2>Основные данные курса</h2>
           {(userRole.isAdmin || userRole.isTeacher) && (
-            <Button variant="warning" onClick={handleShowEditCourse} className="mt-3 float-right">
-              Редактировать
+            <Button
+            variant="warning"
+            onClick={userRole.isAdmin ? handleShowEditCourse : userRole.isTeacher ? handleShowEditTeacherCourse : null}
+            className="mt-3 float-right"
+            >
+            Редактировать
             </Button>
           )}
+          {userRole.isStudent === false && userRole.isAdmin === false && userRole.isTeacher === false && courseDetails.status === 'OpenForAssigning' && (
+            hasAccept ? (
+                <p className="mt-3 float-right mr-3">Заявка отправлена</p>
+            ) : (
+            <Button
+              variant="success"
+              onClick={handleShowAcceptCourse}
+              className="mt-3 float-right mr-3"
+            >
+            Записаться на курс
+            </Button>
+  )
+)}
           </div>
           <Table striped bordered>
             <tbody>
-              <tr>
-                <td>Статус курса</td>
-                <td>{courseDetails.status}</td>
-              </tr>
+            <tr>
+            <td>Статус курса</td>
+              <td>{courseDetails.status}</td>
+              {(userRole.isAdmin || userRole.isTeacher) && (
+              <td>
+                <div className="d-flex">
+              <Button variant="outline-primary" onClick={handleShowEditStatus}>
+                Изменить
+              </Button>
+              </div>
+            </td>
+              )}
+            </tr>
+
               <tr>
                 <td>Учебный год</td>
                 <td>{courseDetails.startYear}</td>
@@ -105,18 +194,23 @@ const CourseDetailsPage = () => {
           {activeTab === 'requirements' && (
             <div className="mt-4">
               <h3>Требования</h3>
-              <p>{courseDetails.requirements}</p>
+              <div dangerouslySetInnerHTML={{ __html: courseDetails.requirements }} />
             </div>
           )}
           {activeTab === 'annotations' && (
             <div className="mt-4">
               <h3>Аннотация</h3>
-              <p>{courseDetails.annotations}</p>
+              <div dangerouslySetInnerHTML={{ __html: courseDetails.annotations }} />
             </div>
           )}
           {activeTab === 'notifications' && (
             <div className="mt-4">
               <h3>Уведомления</h3>
+              {(userRole.isAdmin || userRole.isTeacher) && (
+                <Button variant="primary" onClick={handleShowCreateNotification}>
+                  Создать уведомление
+                </Button>
+                  )}
               {courseDetails.notifications.map((notification, index) => (
                 <div key={index}>
                   <p>{notification.text}</p>
@@ -140,7 +234,12 @@ const CourseDetailsPage = () => {
           {activeTab === 'students' && (
             <div className="mt-4">
               <h3>Студенты</h3>
-              <p>{courseDetails.students}</p>
+              {courseDetails.students.map((student, index) => (
+                <div key={index}>
+                  <p>{student.name}</p>
+                  <small>{student.email}</small>
+                </div>
+              ))}
             </div>
           )}
           {activeTab === 'teachers' && (
@@ -162,6 +261,26 @@ const CourseDetailsPage = () => {
     handleEditCourse={handleEditCourse}
     courseId={courseId}
     initialCourseData={courseDetails}
+      />
+            <EditCourseModalTeacher
+    show={showEditTeacherCourseModal}
+    handleClose={handleEditTeacherClose}
+    handleEditCourse={handleEditTeacherCourse}
+    courseId={courseId}
+    initialCourseData={courseDetails}
+      />
+                <EditStatusModal
+    show={showEditStatusModal}
+    handleClose={handleCloseStatus}
+    handleEditStatus={handleEditStatus}
+    courseId={courseId}
+    initialCourseData={courseDetails}
+      />
+      <AcceptCourseModal
+    show={showAcceptModal}
+    handleClose={handleCloseAccept}
+    handleAcceptCourse={handleAcceptCourse}
+    courseId={courseId}
       />
     </Container>
   );

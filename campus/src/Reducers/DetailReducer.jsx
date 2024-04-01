@@ -4,12 +4,14 @@ import {
     FETCH_COURSE_DETAILS_SUCCESS,
     FETCH_COURSE_DETAILS_FAILURE,
   } from '../Components/Actions/GetDetails';
+import {ACCEPT_COURSE_SUCCESS} from '../Components/Actions/PostAcceptCourse';
   
   import { SET_COURSE_ID } from '../Components/CoursesPage';
   const initialState = {
     courseDetails: null,
     error: '',
-    courseId: ''
+    courseId: '',
+    hasAccept: false
   };
   
   const courseDetailsReducer = (state = initialState, action) => {
@@ -32,7 +34,12 @@ import {
         return{
             ...state,
             courseId:action.payload
-        }
+        };
+      case ACCEPT_COURSE_SUCCESS:
+          return{
+            ...state,
+            hasAccept: true
+          }
       default:
         return state;
     }
