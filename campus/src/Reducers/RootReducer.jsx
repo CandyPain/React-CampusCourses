@@ -5,6 +5,7 @@ import groupReducer from './GroupReducer.jsx'
 import roleReducer from './RoleReducer.jsx'
 import coursesReducer from './CoursesReducer.jsx';
 import detailReducer from './DetailReducer.jsx'
+import usersReducer from './UsersReducer.jsx'
 
 const rootReducer = combineReducers({
   registration: registerReducer,
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
   group: groupReducer,
   role: roleReducer,
   course: coursesReducer,
-  detail: detailReducer
+  detail: detailReducer,
+  users: usersReducer,
 });
 
 export default rootReducer;

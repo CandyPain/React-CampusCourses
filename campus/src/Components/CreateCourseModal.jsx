@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Modal, Button, Form } from 'react-bootstrap';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { getUsers } from './Actions/GetAllUsers';
+import Select from 'react-select';
 
 const CreateCourseModal = ({ show, handleClose, handleСreateCourse,groupId }) => {
   const [courseData, setCourseData] = useState({
@@ -14,6 +17,14 @@ const CreateCourseModal = ({ show, handleClose, handleСreateCourse,groupId }) =
     mainTeacherId: '',
   });
 
+  const dispatch = useDispatch();
+  const allUsers = []
+
+    useEffect(() => {
+    dispatch(getUsers());
+  }, []);
+
+  
   const quillModules = {
     toolbar: [
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
@@ -143,13 +154,20 @@ const CreateCourseModal = ({ show, handleClose, handleСreateCourse,groupId }) =
           </Form.Group>
           <Form.Group controlId="formMainTeacher">
             <Form.Label>Основной преподаватель</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Введите имя основного преподавателя"
-              name="mainTeacherId"
-              value={courseData.mainTeacherId}
-              onChange={handleChange}
-            />
+            <Select
+          options={allUsers
+            .map(user => ({ value: user.id, label: user.fullName }))
+          }
+          onChange={(selectedOption) => setCourseData(prevData => ({
+            ...prevData,
+            mainTeacherId: selectedOption ? selectedOption.value : '', 
+          }))}
+          value={courseData.mainTeacherId ?
+            { value: courseData.mainTeacherId, label: allUsers.find(user => user.id === courseData.mainTeacherId)?.fullName || '' } :
+            null
+          }
+          isSearchable={true}
+        />
           </Form.Group>
         </Form>
       </Modal.Body>

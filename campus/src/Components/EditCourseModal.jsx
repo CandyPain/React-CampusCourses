@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Modal, Button, Form } from 'react-bootstrap';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import Select from 'react-select';
 
 const EditCourseModal = ({ show, handleClose, handleEditCourse, courseId, initialCourseData }) => {
+
+  const allUsers = useSelector(state => state.users.allUsers);
     const [courseData, setCourseData] = useState({
         name: initialCourseData ? initialCourseData.name : '',
         startYear: initialCourseData ? initialCourseData.startYear : '',
@@ -156,13 +160,20 @@ const EditCourseModal = ({ show, handleClose, handleEditCourse, courseId, initia
           </Form.Group>
           <Form.Group controlId="formMainTeacher">
             <Form.Label>Основной преподаватель</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Введите имя основного преподавателя"
-              name="mainTeacherId"
-              value={courseData.mainTeacherId}
-              onChange={handleChange}
-            />
+            <Select
+          options={allUsers
+            .map(user => ({ value: user.id, label: user.fullName }))
+          }
+          onChange={(selectedOption) => setCourseData(prevData => ({
+            ...prevData,
+            mainTeacherId: selectedOption ? selectedOption.value : '', 
+          }))}
+          value={courseData.mainTeacherId ?
+            { value: courseData.mainTeacherId, label: allUsers.find(user => user.id === courseData.mainTeacherId)?.fullName || '' } :
+            null
+          }
+          isSearchable={true}
+        />
           </Form.Group>
         </Form>
       </Modal.Body>

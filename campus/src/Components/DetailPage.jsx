@@ -18,11 +18,13 @@ import {editStudentStatus} from './Actions/PostStudentStatus'
 import {loadProfileData} from './Actions/GetProfile'
 import { editStudentMark } from './Actions/PostEditMark';
 import EditGrageModal from './EditGradeModal';
+import { getMyCourses } from './Actions/GetMyCourses';
 
 export const SET_STUDENT_INFO = 'SET_STUDENT_INFO';
 
 const CourseDetailsPage = () => {
 
+  const coursesMy = useSelector(state => state.course.coursesMyList);
   const [showEditStatusModal, setShowEditStatusModal] = useState(false);
   const [showEditGrageModal, setShowEditGrageModal] = useState(false);
   const [showCreateNotificationModal, setShowCreateNotificationModal] = useState(false);
@@ -38,13 +40,15 @@ const CourseDetailsPage = () => {
   const hasAccept = useSelector(state => state.detail.hasAccept);
   useEffect(() => {
     dispatch(fetchRole());
-    dispatch(loadProfileData);
+    dispatch(getMyCourses());
+    dispatch(loadProfileData());
     dispatch(fetchCourseDetails(courseId));
+    console.log("USEREMAIL", userEmail);
   }, [dispatch]);
   
   useEffect(() => {
     console.log('courseDetails:', courseDetails);
-  }, [courseDetails,userRole]);
+  }, [courseDetails,userRole, userEmail]);
   const [activeTab, setActiveTab] = useState('requirements');
 
   const handleTabChange = (tab) => {
@@ -84,6 +88,7 @@ const CourseDetailsPage = () => {
   const handleAcceptCourse = (courseId) => {
     dispatch(acceptCourse(courseId));
     setShowAcceptModal(false);
+    dispatch(getMyCourses());
   };
 
   const handleShowEditStatus = () => {
@@ -138,6 +143,9 @@ const CourseDetailsPage = () => {
     setShowAcceptModal(false);
   };
   
+
+  const handleAddTeacher = () => {
+  };
   const getStatusColor = (status) => {
     switch (status) {
       case 'InQueue':
@@ -182,19 +190,23 @@ const CourseDetailsPage = () => {
             Редактировать
             </Button>
           )}
-          {userRole.isStudent === false && userRole.isAdmin === false && userRole.isTeacher === false && courseDetails.status === 'OpenForAssigning' && (
-            hasAccept ? (
-                <p className="mt-3 float-right mr-3">Заявка отправлена</p>
+          {!userRole.isAdmin && !userRole.isTeacher && courseDetails.status === 'OpenForAssigning' && (
+          <>
+              {coursesMy.some(course => course.id === courseId) ? (
+            <p className="mt-3 float-right mr-3">Заявка подана</p>
             ) : (
-            <Button
+              <Button
               variant="success"
               onClick={handleShowAcceptCourse}
               className="mt-3 float-right mr-3"
-            >
-            Записаться на курс
-            </Button>
-  )
-)}
+              >
+              Записаться на курс
+              </Button>
+            )}
+          </>
+          )}
+
+
           </div>
           <Table striped bordered>
             <tbody>
@@ -338,17 +350,31 @@ const CourseDetailsPage = () => {
 )}
 
 
-
-
           {activeTab === 'teachers' && (
             <div className="mt-4">
               <h3>Преподаватели</h3>
-              {courseDetails.teachers.map((teacher, index) => (
-                <div key={index}>
-                  <p>{teacher.name}</p>
-                  <small>{teacher.email}</small>
-                </div>
-              ))}
+      {userRole.isAdmin || courseDetails.teachers.some(
+    (teacher) => teacher.email === userEmail && teacher.isMain
+  ) ? (
+        <Button variant="primary" onClick={handleAddTeacher} className="mb-3">
+          Добавить преподавателя
+        </Button>
+      ) : null}
+      <ListGroup>
+        {courseDetails.teachers.map((teacher, index) => (
+          <ListGroup.Item key={index}>
+            <div className="d-flex justify-content-between align-items-center">
+              <div>
+                <p>{teacher.name}</p>
+                <small>{teacher.email}</small>
+              </div>
+              {teacher.isMain && (
+                <span className="badge bg-success">Главный преподаватель</span>
+              )}
+            </div>
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
             </div>
           )}
         </>

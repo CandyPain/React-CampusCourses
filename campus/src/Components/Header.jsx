@@ -6,6 +6,7 @@ import Nav from 'react-bootstrap/Nav';
 import { useNavigate } from 'react-router-dom';
 import { logOut } from './Actions/PostLogout';
 import { fetchRole } from './Actions/GetRole';
+import { getUsers } from './Actions/GetAllUsers';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -18,6 +19,10 @@ const Header = () => {
   useEffect(() => {
     console.log(userRole,'userRole');
   }, [userRole]);
+
+  useEffect(() => {
+    dispatch(getUsers());
+  }, []);
 
   const handleLogout = () => {
     dispatch(logOut());
