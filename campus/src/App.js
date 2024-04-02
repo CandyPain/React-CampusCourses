@@ -9,6 +9,8 @@ import MainPage from './Components/MainPage'
 import ProfilePage from './Components/ProfilePage'
 import CoursesPage from './Components/CoursesPage'
 import DetailPage from './Components/DetailPage'
+import CoursesMyPage from './Components/CoursesMyPage'
+import CoursesTeachingPage from './Components/CoursesTeachingPage'
 
 const App = () => {
   return (
@@ -23,6 +25,8 @@ const App = () => {
           <Route exact path="/profile" element={<ProfilePage/>} />
           <Route exact path = "/groups/:groupId" element={<CoursesPage/>}/>
           <Route exact path = "/courses/:courseId" element={<DetailPage/>}/>
+          <Route exact path = "/courses/my" element = {<CoursesMyPage/>}/>
+          <Route exact path = "/courses/teaching" element = {<CoursesTeachingPage/>}/>
       </Routes>
       </Router>
     </div>

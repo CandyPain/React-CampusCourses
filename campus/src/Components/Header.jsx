@@ -24,7 +24,7 @@ const Header = () => {
   };
 
   const handleFetchMyCourses = () => {
-    //dispatch(fetchMyCourses());
+    navigate('/courses/my');
   };
 
   const handleFetchTeachingCourses = () => {
