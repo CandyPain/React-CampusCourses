@@ -193,16 +193,16 @@ const CourseDetailsPage = () => {
           <h1 className="text-center mb-4">{courseDetails.name}</h1>
           <div className="d-flex justify-content-between align-items-center mb-4">
           <h2>Основные данные курса</h2>
-          {(userRole.isAdmin || userRole.isTeacher) && (
+          {(userRole.isAdmin || courseDetails.teachers.some(t=>t.email === userEmail)) && (
             <Button
             variant="warning"
-            onClick={userRole.isAdmin ? handleShowEditCourse : userRole.isTeacher ? handleShowEditTeacherCourse : null}
+            onClick={userRole.isAdmin ? handleShowEditCourse : handleShowEditTeacherCourse}
             className="mt-3 float-right"
             >
             Редактировать
             </Button>
           )}
-          {!userRole.isAdmin && !userRole.isTeacher && courseDetails.status === 'OpenForAssigning' && (
+          {!userRole.isAdmin && !courseDetails.teachers.some(t=>t.email === userEmail) && courseDetails.status === 'OpenForAssigning' && (
           <>
               {coursesMy.some(course => course.id === courseId) ? (
             <p className="mt-3 float-right mr-3">Заявка подана</p>

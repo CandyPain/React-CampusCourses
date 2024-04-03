@@ -12,6 +12,7 @@ import DeleteGroupModal from './DeleteGroupModal';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { getUsers } from './Actions/GetAllUsers';
+import Swal from 'sweetalert2';
 
 export const SET_GROUP_ID = 'SET_GROUP_ID'
 
@@ -50,14 +51,45 @@ const MainPage = () => {
     setShowEditModal(true);
   };
 
-  const handleSaveEdit = (groupId, groupName) => {
-    dispatch(editGroup(groupId, groupName));
+  const handleSaveEdit = async(groupId, groupName) => {
+    try{
+    await dispatch(editGroup(groupId, groupName));
     setShowEditModal(false);
+    Swal.fire({
+      icon: 'success',
+      title: 'Успешно!',
+      text: 'Группа успешно отредактирована.',
+    });
+    }
+    catch(error)
+    {
+      
+      Swal.fire({
+        icon: 'error',
+        title: 'Ошибка!',
+        text: 'Произошла ошибка при редактировании группы.',
+      });
+    }
   };
 
-  const handleCreate = (groupName) => {
-    dispatch(createGroup(groupName));
+  const handleCreate = async(groupName) => {
+    try{
+    await dispatch(createGroup(groupName));
     setShowCreateModal(false);
+    Swal.fire({
+      icon: 'success',
+      title: 'Успешно!',
+      text: 'Группа успешно создана.',
+    });
+    }
+    catch(error){
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Ошибка!',
+        text: 'Произошла ошибка при создании группы.',
+      });
+    }
   };
 
   const handleCloseEdit = () => {
