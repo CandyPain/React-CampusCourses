@@ -19,13 +19,12 @@ const CourseList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(fetchRole());
     dispatch(getTeachingCourses());
   }, [dispatch]);
   
   useEffect(() => {
     console.log('courses:', courses);
-  }, [courses,userRole]);
+  }, [courses]);
 
   const handleClose = () => {
     setShowCreateCourseModal(false);
@@ -80,7 +79,6 @@ const CourseList = () => {
   return (
     <Container className="mt-4">
       <h1 className="text-center mb-4">Группы кампусных курсов</h1>
-      {renderCreateCourseButton()}
       <ListGroup>
         {courses.map((course) => (
           <ListGroup.Item key={course.id} onClick={() => handleToCourse(course.id)}>
@@ -100,13 +98,6 @@ const CourseList = () => {
           </ListGroup.Item>
         ))}
       </ListGroup>
-  
-      <CreateCourseModal
-        show={showСreateCourseModal}
-        handleClose={handleClose}
-        handleСreateCourse={handleСreateCourse}
-        groupId={groupId}
-      />
     </Container>
   );
   

@@ -19,13 +19,12 @@ const CourseList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(fetchRole());
     dispatch(getCourses(groupId));
   }, [dispatch]);
   
   useEffect(() => {
-    console.log('courses:', courses);
-  }, [courses,userRole]);
+    //console.log('courses:', courses);
+  }, [courses]);
 
   const handleClose = () => {
     setShowCreateCourseModal(false);
@@ -40,7 +39,7 @@ const CourseList = () => {
   }
 
   const renderCreateCourseButton = () => {
-    console.log(userRole);
+    //console.log(userRole);
     if (userRole && userRole.isAdmin === true) {
       console.log('in if ');
       return (

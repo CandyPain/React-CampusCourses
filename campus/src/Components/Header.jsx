@@ -20,12 +20,10 @@ const Header = () => {
     console.log(userRole,'userRole');
   }, [userRole]);
 
-  useEffect(() => {
-    dispatch(getUsers());
-  }, []);
-
-  const handleLogout = () => {
-    dispatch(logOut());
+  const handleLogout = async () => {
+    await dispatch(logOut());
+    console.log('navigate(login)');
+    navigate('/login');
   };
 
   const handleFetchMyCourses = () => {
@@ -33,7 +31,7 @@ const Header = () => {
   };
 
   const handleFetchTeachingCourses = () => {
-    //dispatch(fetchTeachingCourses());
+    navigate('/courses/teaching');
   };
 
   return (

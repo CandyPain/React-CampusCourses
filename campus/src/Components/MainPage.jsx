@@ -11,6 +11,7 @@ import CreateGroupModal from './CreateGroupModal';
 import DeleteGroupModal from './DeleteGroupModal';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { getUsers } from './Actions/GetAllUsers';
 
 export const SET_GROUP_ID = 'SET_GROUP_ID'
 
@@ -30,6 +31,7 @@ const MainPage = () => {
   useEffect(() => {
     dispatch(fetchRole());
     dispatch(fetchGroups());
+    dispatch(getUsers());
   }, [dispatch]);
 
   useEffect(() => {
@@ -113,10 +115,11 @@ const MainPage = () => {
           <ListGroup.Item key={group.id} onClick={() => handleToGroup(group.id)}>
             {group.name}
             {userRole && userRole.isAdmin === true && (
-              <div className="d-flex justify-content-end">
+              <div className="d-flex justify-content-end flex-wrap">
                 <Button variant="warning" className="ml-2 mr-2" onClick={(e) => handleEditGroup(e,group.id, '', group.name)}>
                   Редактировать
                 </Button>
+                <div style={{ width: '2%' }} /> 
                 <Button variant="danger" className="ml-2" onClick={(e) => handleDeleteGroup(e,group.id)}>
                   Удалить
                 </Button>

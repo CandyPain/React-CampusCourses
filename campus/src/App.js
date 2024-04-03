@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch} from 'react-redux';
 import Header from './Components/Header'
 import WelcomeMessage from './Components/WelcomeMessage'
 import RegistrationPage from "./Components/RegistrationPage";
@@ -11,8 +12,14 @@ import CoursesPage from './Components/CoursesPage'
 import DetailPage from './Components/DetailPage'
 import CoursesMyPage from './Components/CoursesMyPage'
 import CoursesTeachingPage from './Components/CoursesTeachingPage'
+import { getUsers } from './Components/Actions/GetAllUsers';
 
 const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUsers());
+  }, [dispatch]);
   return (
     <div>
       <Router>

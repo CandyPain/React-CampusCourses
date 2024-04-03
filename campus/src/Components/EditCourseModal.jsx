@@ -7,7 +7,14 @@ import Select from 'react-select';
 
 const EditCourseModal = ({ show, handleClose, handleEditCourse, courseId, initialCourseData }) => {
 
-  const allUsers = useSelector(state => state.users.allUsers);
+  const allUsers = useSelector(state => state.users.allUsers)
+
+  const getMainTeacherId = (teachers) => {
+    console.log('techers', teachers);
+    const mainTeacher = teachers.find(teacher => teacher.isMain);
+    return mainTeacher ? mainTeacher.id : '';
+  };
+
     const [courseData, setCourseData] = useState({
         name: initialCourseData ? initialCourseData.name : '',
         startYear: initialCourseData ? initialCourseData.startYear : '',
@@ -15,7 +22,7 @@ const EditCourseModal = ({ show, handleClose, handleEditCourse, courseId, initia
         semester: initialCourseData ? initialCourseData.semester : '',
         requirements: initialCourseData ? initialCourseData.requirements : '',
         annotations: initialCourseData ? initialCourseData.annotations : '',
-        mainTeacherId: initialCourseData ? initialCourseData.mainTeacherId : '',
+        mainTeacherId: initialCourseData ? getMainTeacherId(initialCourseData.teachers) : '',
       });
       useEffect(() => {
         if (initialCourseData) {
@@ -26,7 +33,7 @@ const EditCourseModal = ({ show, handleClose, handleEditCourse, courseId, initia
             semester: initialCourseData.semester || '',
             requirements: initialCourseData.requirements || '',
             annotations: initialCourseData.annotations || '',
-            mainTeacherId: initialCourseData.mainTeacherId || '',
+            mainTeacherId: initialCourseData ? getMainTeacherId(initialCourseData.teachers) : '',
           });
         }
       }, [initialCourseData]);

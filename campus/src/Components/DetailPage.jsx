@@ -19,6 +19,8 @@ import {loadProfileData} from './Actions/GetProfile'
 import { editStudentMark } from './Actions/PostEditMark';
 import EditGrageModal from './EditGradeModal';
 import { getMyCourses } from './Actions/GetMyCourses';
+import { createTeacher } from './Actions/PostTeacher';
+import AddTeacherModal from './AddTeacherModal';
 
 export const SET_STUDENT_INFO = 'SET_STUDENT_INFO';
 
@@ -26,6 +28,7 @@ const CourseDetailsPage = () => {
 
   const coursesMy = useSelector(state => state.course.coursesMyList);
   const [showEditStatusModal, setShowEditStatusModal] = useState(false);
+  const [showAddTeacherModal, setShowAddTeacherModal] = useState(false);
   const [showEditGrageModal, setShowEditGrageModal] = useState(false);
   const [showCreateNotificationModal, setShowCreateNotificationModal] = useState(false);
   const [showAcceptModal, setShowAcceptModal] = useState(false);
@@ -37,9 +40,7 @@ const CourseDetailsPage = () => {
   const {studentId, studentName} = useSelector((state) => state.detail);
   const userRole = useSelector(state => state.role.role);
   const userEmail = useSelector(state => state.profile.email);
-  const hasAccept = useSelector(state => state.detail.hasAccept);
   useEffect(() => {
-    dispatch(fetchRole());
     dispatch(getMyCourses());
     dispatch(loadProfileData());
     dispatch(fetchCourseDetails(courseId));
@@ -48,7 +49,7 @@ const CourseDetailsPage = () => {
   
   useEffect(() => {
     console.log('courseDetails:', courseDetails);
-  }, [courseDetails,userRole, userEmail]);
+  }, [courseDetails, userEmail]);
   const [activeTab, setActiveTab] = useState('requirements');
 
   const handleTabChange = (tab) => {
@@ -85,10 +86,15 @@ const CourseDetailsPage = () => {
   };
 
 
-  const handleAcceptCourse = (courseId) => {
-    dispatch(acceptCourse(courseId));
+  const handleAcceptCourse = async(courseId,id) => {
+    await dispatch(acceptCourse(courseId,id));
     setShowAcceptModal(false);
     dispatch(getMyCourses());
+  };
+
+  const handleAddTeacher = (courseId, id) => {
+    dispatch(createTeacher(courseId,id));
+    setShowAddTeacherModal(false);
   };
 
   const handleShowEditStatus = () => {
@@ -124,7 +130,7 @@ const CourseDetailsPage = () => {
   };
 
   const handleEditTeacherClose = () => {
-    setShowEditCourseModal(false);
+    setShowEditTeacherCourseModal(false);
   };
 
   const handleSaveStatus = () => {
@@ -144,8 +150,14 @@ const CourseDetailsPage = () => {
   };
   
 
-  const handleAddTeacher = () => {
+  const handleShowAddTeacher = () => {
+    setShowAddTeacherModal(true);
   };
+
+  const handleCloseAddTeacherModal = () => {
+    setShowAddTeacherModal(false);
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
       case 'InQueue':
@@ -356,7 +368,7 @@ const CourseDetailsPage = () => {
       {userRole.isAdmin || courseDetails.teachers.some(
     (teacher) => teacher.email === userEmail && teacher.isMain
   ) ? (
-        <Button variant="primary" onClick={handleAddTeacher} className="mb-3">
+        <Button variant="primary" onClick={handleShowAddTeacher} className="mb-3">
           Добавить преподавателя
         </Button>
       ) : null}
@@ -419,6 +431,12 @@ const CourseDetailsPage = () => {
       studentName={studentName}
       courseId={courseId}
       studentId={studentId}
+      />
+      <AddTeacherModal
+      show={showAddTeacherModal}
+      handleClose={handleCloseAddTeacherModal}
+      handleAddTeacher={handleAddTeacher}
+      courseId={courseId}
       />
     </Container>
   );

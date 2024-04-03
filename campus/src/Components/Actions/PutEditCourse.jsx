@@ -22,7 +22,7 @@ export const editCourse = (courseId,courseInfo) => async (dispatch) => {
 
 export const editCourseTeacher = (courseId,courseInfo) => async (dispatch) => {
   try {
-    const response = await axios.put(`https://camp-courses.api.kreosoft.space/courses/${courseId}/requirement-and-annotations`, courseInfo,   
+    const response = await axios.put(`https://camp-courses.api.kreosoft.space/courses/${courseId}/requirements-and-annotations`, courseInfo,   
     {
     headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`

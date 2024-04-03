@@ -16,14 +16,8 @@ const CreateCourseModal = ({ show, handleClose, handleСreateCourse,groupId }) =
     annotations: '',
     mainTeacherId: '',
   });
-
-  const dispatch = useDispatch();
-  const allUsers = []
-
-    useEffect(() => {
-    dispatch(getUsers());
-  }, []);
-
+  const allUsers = useSelector(state => state.users.allUsers)
+  console.log(allUsers);
   
   const quillModules = {
     toolbar: [

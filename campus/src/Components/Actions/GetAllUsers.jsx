@@ -5,10 +5,11 @@ export const GET_USERS_ERROR = 'GET_USERS_ERROR';
 
 export const getUsers = () => async (dispatch) => {
   try {
+    console.log('ALLUSERS START');
     const response = await axios.get(`https://camp-courses.api.kreosoft.space/users`,{headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`
     }});
-    //console.log('ALLUSERS', response);
+    console.log('ALLUSERS END', response);
     dispatch({
       type: GET_USERS_SUCCESS,
       payload: response.data,

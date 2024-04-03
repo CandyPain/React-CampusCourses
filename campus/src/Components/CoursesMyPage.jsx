@@ -20,13 +20,12 @@ const CourseList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(fetchRole());
     dispatch(getMyCourses());
   }, [dispatch]);
   
   useEffect(() => {
-    console.log('courses:', courses);
-  }, [courses,userRole]);
+    //console.log('courses:', courses);
+  }, [courses]);
 
   const handleClose = () => {
     setShowCreateCourseModal(false);
@@ -41,7 +40,7 @@ const CourseList = () => {
   }
 
   const renderCreateCourseButton = () => {
-    console.log(userRole);
+    //console.log(userRole);
     if (userRole && userRole.isAdmin === true) {
       console.log('in if ');
       return (
@@ -81,7 +80,6 @@ const CourseList = () => {
   return (
     <Container className="mt-4">
       <h1 className="text-center mb-4">Группы кампусных курсов</h1>
-      {renderCreateCourseButton()}
       <ListGroup>
         {courses.map((course) => (
           <ListGroup.Item key={course.id} onClick={() => handleToCourse(course.id)}>
@@ -101,13 +99,6 @@ const CourseList = () => {
           </ListGroup.Item>
         ))}
       </ListGroup>
-  
-      <CreateCourseModal
-        show={showСreateCourseModal}
-        handleClose={handleClose}
-        handleСreateCourse={handleСreateCourse}
-        groupId={groupId}
-      />
     </Container>
   );
   

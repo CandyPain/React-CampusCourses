@@ -6,7 +6,7 @@ export const logOut = () => async (dispatch) => {
   try {
     console.log("logout start");
     console.log(localStorage.getItem('token'));
-    await axios.post('https://camp-courses.api.kreosoft.space/logout',{
+    await axios.post('https://camp-courses.api.kreosoft.space/logout',{data:''},{
   headers: {
     Authorization: `Bearer ${localStorage.getItem('token')}`
   }
