@@ -19,12 +19,20 @@ const CourseList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if(!groupId && localStorage.getItem('groupId'))
+    {
+      dispatch({type: SET_COURSE_ID, payload:localStorage.getItem('groupId')});
+    }
     dispatch(getCourses(groupId));
   }, [dispatch]);
   
   useEffect(() => {
     //console.log('courses:', courses);
   }, [courses]);
+
+  useEffect(() => {
+    localStorage.setItem('courseId', groupId);
+  }, [groupId]);
 
   const handleClose = () => {
     setShowCreateCourseModal(false);

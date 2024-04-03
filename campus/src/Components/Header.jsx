@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { logOut } from './Actions/PostLogout';
 import { fetchRole } from './Actions/GetRole';
 import { getUsers } from './Actions/GetAllUsers';
+import { LOGIN_SUCCESS } from './Actions/PostLogin';
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -15,7 +16,16 @@ const Header = () => {
   const userRole = useSelector(state => state.role.role);
   const navigate = useNavigate();
 
-  
+
+ /*
+  useEffect(() => {
+    if(localStorage.getItem('token'))
+    {
+      dispatch({type: LOGIN_SUCCESS, payload:localStorage.getItem('token')});
+    }
+  }, [dispatch]);
+  */
+
   useEffect(() => {
     console.log(userRole,'userRole');
   }, [userRole]);

@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const loginUser = (userData) => {
   return async (dispatch) => {
     try {

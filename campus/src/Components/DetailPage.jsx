@@ -21,6 +21,7 @@ import EditGrageModal from './EditGradeModal';
 import { getMyCourses } from './Actions/GetMyCourses';
 import { createTeacher } from './Actions/PostTeacher';
 import AddTeacherModal from './AddTeacherModal';
+import { SET_COURSE_ID } from './CoursesPage';
 
 export const SET_STUDENT_INFO = 'SET_STUDENT_INFO';
 
@@ -41,6 +42,10 @@ const CourseDetailsPage = () => {
   const userRole = useSelector(state => state.role.role);
   const userEmail = useSelector(state => state.profile.email);
   useEffect(() => {
+    if(!courseId && localStorage.getItem('courseId'))
+    {
+      dispatch({type: SET_COURSE_ID, payload:localStorage.getItem('courseId')});
+    }
     dispatch(getMyCourses());
     dispatch(loadProfileData());
     dispatch(fetchCourseDetails(courseId));
@@ -51,6 +56,10 @@ const CourseDetailsPage = () => {
     console.log('courseDetails:', courseDetails);
   }, [courseDetails, userEmail]);
   const [activeTab, setActiveTab] = useState('requirements');
+
+  useEffect(() => {
+    localStorage.setItem('courseId', courseId);
+  }, [courseId]);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
