@@ -46,7 +46,33 @@ const CreateCourseModal = ({ show, handleClose, handleСreateCourse,groupId }) =
   };
 
   const handleSave = () => {
-    handleСreateCourse(groupId,courseData);
+    if (
+      courseData.name.trim() === '' ||
+      courseData.semester.trim() === '' ||
+      courseData.mainTeacherId.trim() === ''
+    ) {
+      alert('Пожалуйста, заполните все обязательные поля: Название, семестр, преподаватель.');
+      return; 
+    }
+
+    const currentYear = new Date().getFullYear();
+    if (
+      isNaN(courseData.startYear) ||
+      courseData.startYear < 2000 ||
+      courseData.startYear > 2029
+    ) {
+      alert('Пожалуйста, введите год начала курса от 2000 до 2029.');
+      return;
+    }
+    if (
+      isNaN(courseData.maximumStudentsCount) ||
+      courseData.maximumStudentsCount < 1 ||
+      courseData.maximumStudentsCount > 200
+    ) {
+      alert('Пожалуйста, введите количество студентов от 1 до 200.');
+      return;
+    }
+    handleСreateCourse(groupId, courseData);
     handleClose();
   };
 
